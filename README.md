@@ -36,3 +36,8 @@ This information could be provided by the controler who looks at the coordinates
 Tried using [Awesomium HTML UI Engine](www.awesomium.com) however it's SDK installation proved to mess up with the Windows Explorer process and was dropped.
 
 Have not found any way to figure out how to retrive the current view position from the web browser controller, as long as this information is not available, cannot implement more features without writing my own controller & view.
+
+### Libraries
+- [AngleSharp](https://github.com/AngleSharp/AngleSharp)
+- [VersFX EpubReader](https://github.com/versfx/EpubReader)
+- [ePubReader](https://epubreader.codeplex.com/)

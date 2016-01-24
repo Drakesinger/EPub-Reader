@@ -5,16 +5,19 @@ ePub reader project for .Net class.
 
 ### Main features
 - Choose layout
-  - Single Page
-  - Continous
+  - [ ] Single Page
+  - [x] Continous
 - Choose font
-  - Size
-  - Character Set
+  - [ ] Size
+  - [ ] Character Set
 
 ### Optional features
-- Bookmarks
-- Table of Contents
-- Highlights
-- Notes
-- Night Mode
+- [ ] Bookmarks 
+   - Technically can be added but cannot see where.
+- [x] Table of Contents
+- [ ] Highlights 
+   - Same problem as with bookmarks.
+- [ ] Notes
+   - Same problem as with bookmarks
+- [x] Night Mode
 

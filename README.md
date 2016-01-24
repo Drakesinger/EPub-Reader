@@ -19,7 +19,7 @@ ePub reader project for .Net class.
 - [ ] Highlights 
    - Same problem as with bookmarks.
 - [ ] Notes
-   - Same problem as with bookmarks
+   - Same problem as with bookmarks.
 - [x] Night Mode
    - See [Known Issues] section
 

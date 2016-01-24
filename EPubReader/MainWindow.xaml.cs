@@ -1,6 +1,6 @@
-﻿using eBdb.EpubReader;
-using AngleSharp;
-
+﻿using AngleSharp;
+using eBdb.EpubReader;
+using mshtml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,8 +8,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-
-using mshtml;
 
 namespace EPubReader
 {
@@ -21,22 +19,23 @@ namespace EPubReader
         #region Tools
 
         #region Regular Expressions
-        
+
         private static Regex _RefsRegex = new Regex(@"(?<prefix><\w+[^>]*?href\s*=\s*(""|'))(?<href>[^""']*)(?<suffix>(""|')[^>]*>)", Utils.REO_ci);
         private static Regex _ExternalLinksRegex = new Regex(@"^\s*(http(s)?://|mailto:|ftp(s)?://)", Utils.REO_ci);
         private System.Collections.Hashtable _LinksMapping = new System.Collections.Hashtable(StringComparer.InvariantCultureIgnoreCase);
-        
+
         #endregion Regular Expressions
 
         #region Paths
-        
+
         private string debugPath = "\\bin\\Debug\\";
         private string releasePath = "\\bin\\Debug\\";
         private string baseDirPath = AppDomain.CurrentDomain.BaseDirectory;
-        
+
         #endregion Paths
 
         #region Objects
+
         /// <summary>
         /// Document Event that tells if the browser has finished loading the document.
         /// Source: <see cref="http://stackoverflow.com/questions/31411328/custom-context-menu-for-wpf-webbrowser-control/34602392#34602392"/>.
@@ -46,17 +45,17 @@ namespace EPubReader
         /// <summary>
         /// The HTML Parser.
         /// </summary>
-        AngleSharp.Parser.Html.HtmlParser htmlParser = new AngleSharp.Parser.Html.HtmlParser();
+        private AngleSharp.Parser.Html.HtmlParser htmlParser = new AngleSharp.Parser.Html.HtmlParser();
 
         #endregion Objects
 
         #region States
-        
+
         /// <summary>
         /// Boolean telling whether or not night mode is on.
         /// </summary>
         private bool nightModeEnabled = false;
-        
+
         #endregion States
 
         #endregion Tools
@@ -101,12 +100,9 @@ namespace EPubReader
                     _docEvent.oncontextmenu += _docEvent_oncontextmenu;
                 }
             };
-
-            
         }
 
-
-        bool _docEvent_oncontextmenu(IHTMLEventObj pEvtObj)
+        private bool _docEvent_oncontextmenu(IHTMLEventObj pEvtObj)
         {
             WebBrowserShowContextMenu();
             return false;
@@ -159,10 +155,8 @@ namespace EPubReader
                     // Find a way to get the height of the whole book.
                     double ScreenHeight = BookDocBrowser.ActualHeight;
 
-
                     // Show the ePub in the web browser.
                     BookDocBrowser.NavigateToString(EPubContent);
-
                 }
             }
             catch (System.Exception ex)
@@ -188,7 +182,7 @@ namespace EPubReader
                 string nightmodeCssFileName = "nightmode.css";
                 string path = Path.Combine(baseDirPath.Remove(baseDirPath.Length - debugPath.Length), @"Styles\", nightmodeCssFileName);
                 string cssLink = "<link href=\"" + path.Replace("\\", "/") + "\" rel=\"stylesheet\" type=\"text/css\" />";
-                
+
                 if (!nightModeEnabled)
                 {
                     Match headermatch = Regex.Match(EPubContent, @"<head[^>]*>(?<head>.+?)</head>", Utils.REO_csi);
@@ -258,7 +252,6 @@ namespace EPubReader
                     BookNavDocBrowser.NavigateToString(htmlContent);
                     changeBetweenBrowsers(true);
                 }
-                
             }
         }
 
@@ -278,7 +271,6 @@ namespace EPubReader
                 BookNavDocBrowser.Visibility = System.Windows.Visibility.Collapsed;
                 BookDocBrowser.Visibility = System.Windows.Visibility.Visible;
             }
-           
         }
 
         private void goBack_Click(object sender, RoutedEventArgs e)
@@ -308,34 +300,36 @@ namespace EPubReader
             // Close then quit.
             Close();
         }
-        
+
         #endregion Events
 
         #region Other Functions
 
         private void parseAndAdd()
         {
-            //Create a (re-usable) parser front-end.
-            //htmlParser = new AngleSharp.Parser.Html.HtmlParser();
-            
-            //DocumentViewer -> could be used for pagination?
+            // If paginated, get page where we are and add an anchor link.
+            //class DocumentViewer -> could be used for pagination?
 
-            //Source to be parsed.
-            string source = EPubContent;
+            // Problem, need to find position within the document.
+
             //Parse source to document.
-            var document = htmlParser.Parse(source);
-            var head = document.Head;
+            AngleSharp.Dom.Html.IHtmlDocument document = htmlParser.Parse(EPubContent);
+            mshtml.HTMLDocument dType = BookDocBrowser.Document as mshtml.HTMLDocument;
+            
+            
+            //string innerHTML = document.DocumentElement.pos;
             var styles = document.StyleSheets;
+            
             //Do something with document like the following
 
-            //Console.WriteLine("Serializing the (original) document:");
-            //Console.WriteLine(document.DocumentElement.OuterHtml);
-
-            var p = document.CreateElement("p");
-            p.TextContent = "This is another paragraph.";
-
-            Console.WriteLine("Inserting another element in the body ...");
-            document.Body.AppendChild(p);
+            // A method to create a new Element.
+            var a = document.CreateElement("a");
+            // Anchor tag.
+            // Find out how to name the bookmark.
+            // Set it.
+            a.TextContent = "Bookmark";
+            // Don't append since it's not made yet.
+            //document.Body.AppendChild(a);
         }
 
         private void buildNavigation()
@@ -434,7 +428,5 @@ namespace EPubReader
         }
 
         #endregion Utility Functions
-
-        
     }
 }
